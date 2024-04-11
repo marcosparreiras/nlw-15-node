@@ -22,6 +22,7 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
           400: z.object({
             message: z.string(),
           }),
+          500: { message: "Internal server error" },
         },
       },
     },
