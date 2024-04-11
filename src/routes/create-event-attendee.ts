@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../libs/prisma";
+import { EventAlreadyExistsError } from "../errors/event-already-exists-error";
 
 export async function createEventAttendee(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -35,7 +36,7 @@ export async function createEventAttendee(app: FastifyInstance) {
         });
 
         if (attendeeAlreadyExists) {
-          throw new Error(`Attendee ${email} alrady exists on this event`);
+          throw new EventAlreadyExistsError(email);
         }
 
         const attendee = await prisma.attendee.create({
@@ -48,9 +49,11 @@ export async function createEventAttendee(app: FastifyInstance) {
 
         return reply.status(201).send({ attendeeId: attendee.id });
       } catch (error: unknown) {
-        if (error instanceof Error) {
+        if (error instanceof EventAlreadyExistsError) {
           return reply.status(400).send({ message: error.message });
         }
+        console.log(error);
+        return reply.status(500).send({ message: "Internal server error" });
       }
     }
   );
