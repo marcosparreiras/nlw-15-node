@@ -15,12 +15,14 @@ export async function getEvent(app: FastifyInstance) {
         }),
         response: {
           200: z.object({
-            id: z.string(),
-            title: z.string(),
-            details: z.string().nullable(),
-            slug: z.string(),
-            maximumAttendees: z.number().nullable(),
-            atteendessCount: z.number(),
+            event: z.object({
+              id: z.string(),
+              title: z.string(),
+              details: z.string().nullable(),
+              slug: z.string(),
+              maximumAttendees: z.number().nullable(),
+              atteendessAmount: z.number(),
+            }),
           }),
           400: z.object({
             message: z.string(),
@@ -33,23 +35,35 @@ export async function getEvent(app: FastifyInstance) {
       try {
         const { eventId } = request.params;
 
-        const event = await prisma.event.findUnique({ where: { id: eventId } });
+        const event = await prisma.event.findUnique({
+          where: { id: eventId },
+          select: {
+            id: true,
+            title: true,
+            details: true,
+            slug: true,
+            maximumAttendees: true,
+            _count: {
+              select: {
+                attendees: true,
+              },
+            },
+          },
+        });
 
         if (!event) {
           throw new EventNotFoundError(eventId);
         }
 
-        const atteendessCount = await prisma.attendee.count({
-          where: { eventId },
-        });
-
         return reply.status(200).send({
-          id: event.id,
-          title: event.title,
-          details: event.details,
-          slug: event.slug,
-          maximumAttendees: event.maximumAttendees,
-          atteendessCount,
+          event: {
+            id: event.id,
+            title: event.title,
+            details: event.details,
+            slug: event.slug,
+            maximumAttendees: event.maximumAttendees,
+            atteendessAmount: event._count.attendees,
+          },
         });
       } catch (error: unknown) {
         if (error instanceof DomainError) {
