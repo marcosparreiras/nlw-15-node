@@ -6,6 +6,7 @@ import {
 import { createEvent } from "./routes/create-event";
 import { registerForEvent } from "./routes/register-for-event";
 import { env } from "./env";
+import { getEvent } from "./routes/get-event";
 
 const app = fastify();
 
@@ -14,6 +15,7 @@ app.setValidatorCompiler(validatorCompiler);
 
 app.register(createEvent);
 app.register(registerForEvent);
+app.register(getEvent);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`HTTP server is running on port ${env.PORT}`);

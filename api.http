@@ -17,3 +17,9 @@ Content-Type: application/json
   "email": "johndoe@example.com"
 }
 
+
+###
+GET http://localhost:3000/events/ec71f4c6-b696-4e4f-a467-81663a7ab893
+
+
+

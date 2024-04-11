@@ -50,13 +50,10 @@ export async function registerForEvent(app: FastifyInstance) {
         }
 
         if (event.maximumAttendees) {
-          const eventAttendees = await prisma.attendee.aggregate({
+          const eventAttendeesCount = await prisma.attendee.count({
             where: { eventId },
-            _count: {
-              id: true,
-            },
           });
-          if (eventAttendees._count.id >= event.maximumAttendees) {
+          if (eventAttendeesCount >= event.maximumAttendees) {
             throw new EventSoldOutError(eventId);
           }
         }
