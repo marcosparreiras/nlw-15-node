@@ -4,6 +4,7 @@ import { generateSlug } from "../utils/generate-slug";
 import { prisma } from "../libs/prisma";
 import z from "zod";
 import { EventAlreadyExistsError } from "../errors/event-already-exists-error";
+import { DomainError } from "../errors/domain-error";
 
 export async function createEvent(app: FastifyInstance): Promise<void> {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -46,7 +47,7 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
         });
         reply.status(201).send({ eventId: event.id });
       } catch (error: unknown) {
-        if (error instanceof EventAlreadyExistsError) {
+        if (error instanceof DomainError) {
           return reply.status(400).send({ message: error.message });
         }
         console.log(error);
