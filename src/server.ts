@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { generateSlug } from "./utils/generate-slug";
 
 const app = fastify();
 
@@ -24,7 +25,7 @@ app.post("/events", async (request, reply) => {
       title,
       details,
       maximumAttendees,
-      slug: new Date().toISOString(), // temporary fix
+      slug: generateSlug(title),
     },
   });
 
