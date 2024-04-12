@@ -11,6 +11,8 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
     "/events",
     {
       schema: {
+        summary: "Create an event",
+        tags: ["events"],
         body: z.object({
           title: z.string().min(4),
           details: z.string().nullable(),
@@ -23,7 +25,9 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
           400: z.object({
             message: z.string(),
           }),
-          500: { message: "Internal server error" },
+          500: z.object({
+            message: z.string(),
+          }),
         },
       },
     },

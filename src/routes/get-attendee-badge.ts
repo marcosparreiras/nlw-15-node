@@ -10,6 +10,8 @@ export async function getAttendeeBadge(app: FastifyInstance) {
     "/attendees/:attendeeId/badge",
     {
       schema: {
+        summary: "Get an attendee",
+        tags: ["attendees"],
         params: z.object({
           attendeeId: z.coerce.number(),
         }),
@@ -25,7 +27,9 @@ export async function getAttendeeBadge(app: FastifyInstance) {
           400: z.object({
             message: z.string(),
           }),
-          500: { message: "Internal server error" },
+          500: z.object({
+            message: z.string(),
+          }),
         },
       },
     },

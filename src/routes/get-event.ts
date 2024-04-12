@@ -10,6 +10,8 @@ export async function getEvent(app: FastifyInstance) {
     "/events/:eventId",
     {
       schema: {
+        summary: "Get an event",
+        tags: ["events"],
         params: z.object({
           eventId: z.string().uuid(),
         }),
@@ -27,7 +29,9 @@ export async function getEvent(app: FastifyInstance) {
           400: z.object({
             message: z.string(),
           }),
-          500: { message: "Internal server error" },
+          500: z.object({
+            message: z.string(),
+          }),
         },
       },
     },

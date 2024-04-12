@@ -12,6 +12,8 @@ export async function registerForEvent(app: FastifyInstance) {
     "/events/:eventId/attendees",
     {
       schema: {
+        summary: "Register an attendee for an event",
+        tags: ["attendees"],
         params: z.object({
           eventId: z.string().uuid(),
         }),
@@ -26,7 +28,9 @@ export async function registerForEvent(app: FastifyInstance) {
           400: z.object({
             message: z.string(),
           }),
-          500: { message: "Internal server error" },
+          500: z.object({
+            message: z.string(),
+          }),
         },
       },
     },

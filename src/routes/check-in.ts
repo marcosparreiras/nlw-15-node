@@ -11,6 +11,8 @@ export async function checkIn(app: FastifyInstance) {
     "/attendees/:attendeeId/checkIn",
     {
       schema: {
+        summary: "Check in an attendee",
+        tags: ["check-ins"],
         params: z.object({
           attendeeId: z.coerce.number(),
         }),
@@ -21,7 +23,9 @@ export async function checkIn(app: FastifyInstance) {
           400: z.object({
             message: z.string(),
           }),
-          500: { message: "Internal server error" },
+          500: z.object({
+            message: z.string(),
+          }),
         },
       },
     },
