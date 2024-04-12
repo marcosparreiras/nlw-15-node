@@ -36,46 +36,38 @@ export async function getEvent(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      try {
-        const { eventId } = request.params;
+      const { eventId } = request.params;
 
-        const event = await prisma.event.findUnique({
-          where: { id: eventId },
-          select: {
-            id: true,
-            title: true,
-            details: true,
-            slug: true,
-            maximumAttendees: true,
-            _count: {
-              select: {
-                attendees: true,
-              },
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: {
+          id: true,
+          title: true,
+          details: true,
+          slug: true,
+          maximumAttendees: true,
+          _count: {
+            select: {
+              attendees: true,
             },
           },
-        });
+        },
+      });
 
-        if (!event) {
-          throw new EventNotFoundError(eventId);
-        }
-
-        return reply.status(200).send({
-          event: {
-            id: event.id,
-            title: event.title,
-            details: event.details,
-            slug: event.slug,
-            maximumAttendees: event.maximumAttendees,
-            atteendessAmount: event._count.attendees,
-          },
-        });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      if (!event) {
+        throw new EventNotFoundError(eventId);
       }
+
+      return reply.status(200).send({
+        event: {
+          id: event.id,
+          title: event.title,
+          details: event.details,
+          slug: event.slug,
+          maximumAttendees: event.maximumAttendees,
+          atteendessAmount: event._count.attendees,
+        },
+      });
     }
   );
 }

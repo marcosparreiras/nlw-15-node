@@ -30,35 +30,27 @@ export async function checkIn(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      try {
-        const { attendeeId } = request.params;
+      const { attendeeId } = request.params;
 
-        const checkInAlreadyExists = await prisma.checkIn.findUnique({
-          where: { attendeeId },
-        });
+      const checkInAlreadyExists = await prisma.checkIn.findUnique({
+        where: { attendeeId },
+      });
 
-        if (checkInAlreadyExists) {
-          throw new CheckInAlreadyExistsError(attendeeId.toString());
-        }
-
-        const attendee = await prisma.attendee.findUnique({
-          where: { id: attendeeId },
-        });
-
-        if (!attendee) {
-          throw new AttendeeNotFoundError(attendeeId.toString());
-        }
-
-        const checkIn = await prisma.checkIn.create({ data: { attendeeId } });
-
-        return reply.status(201).send({ checkInId: checkIn.id });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      if (checkInAlreadyExists) {
+        throw new CheckInAlreadyExistsError(attendeeId.toString());
       }
+
+      const attendee = await prisma.attendee.findUnique({
+        where: { id: attendeeId },
+      });
+
+      if (!attendee) {
+        throw new AttendeeNotFoundError(attendeeId.toString());
+      }
+
+      const checkIn = await prisma.checkIn.create({ data: { attendeeId } });
+
+      return reply.status(201).send({ checkInId: checkIn.id });
     }
   );
 }

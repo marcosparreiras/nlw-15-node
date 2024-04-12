@@ -32,31 +32,23 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
       },
     },
     async (request, reply) => {
-      try {
-        const { title, details, maximumAttendees } = request.body;
-        const slug = generateSlug(title);
-        const eventAlreadyExists = await prisma.event.findUnique({
-          where: { slug },
-        });
-        if (eventAlreadyExists) {
-          throw new EventAlreadyExistsError(title);
-        }
-        const event = await prisma.event.create({
-          data: {
-            title,
-            details,
-            maximumAttendees,
-            slug,
-          },
-        });
-        reply.status(201).send({ eventId: event.id });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      const { title, details, maximumAttendees } = request.body;
+      const slug = generateSlug(title);
+      const eventAlreadyExists = await prisma.event.findUnique({
+        where: { slug },
+      });
+      if (eventAlreadyExists) {
+        throw new EventAlreadyExistsError(title);
       }
+      const event = await prisma.event.create({
+        data: {
+          title,
+          details,
+          maximumAttendees,
+          slug,
+        },
+      });
+      reply.status(201).send({ eventId: event.id });
     }
   );
 }

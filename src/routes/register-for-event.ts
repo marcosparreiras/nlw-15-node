@@ -5,7 +5,6 @@ import { prisma } from "../libs/prisma";
 import { EventAttendeeAlreadyExistsError } from "../errors/event-attendee-already-exists-error";
 import { EventNotFoundError } from "../errors/event-not-found-error";
 import { EventSoldOutError } from "../errors/event-sold-out-error";
-import { DomainError } from "../errors/domain-error";
 
 export async function registerForEvent(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -35,49 +34,41 @@ export async function registerForEvent(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      try {
-        const { eventId } = request.params;
-        const { name, email } = request.body;
+      const { eventId } = request.params;
+      const { name, email } = request.body;
 
-        const event = await prisma.event.findUnique({ where: { id: eventId } });
+      const event = await prisma.event.findUnique({ where: { id: eventId } });
 
-        if (!event) {
-          throw new EventNotFoundError(eventId);
-        }
-
-        const attendeeAlreadyExists = await prisma.attendee.findUnique({
-          where: { email_eventId: { email, eventId } },
-        });
-
-        if (attendeeAlreadyExists) {
-          throw new EventAttendeeAlreadyExistsError(email);
-        }
-
-        if (event.maximumAttendees) {
-          const eventAttendeesCount = await prisma.attendee.count({
-            where: { eventId },
-          });
-          if (eventAttendeesCount >= event.maximumAttendees) {
-            throw new EventSoldOutError(eventId);
-          }
-        }
-
-        const attendee = await prisma.attendee.create({
-          data: {
-            name,
-            email,
-            eventId,
-          },
-        });
-
-        return reply.status(201).send({ attendeeId: attendee.id });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      if (!event) {
+        throw new EventNotFoundError(eventId);
       }
+
+      const attendeeAlreadyExists = await prisma.attendee.findUnique({
+        where: { email_eventId: { email, eventId } },
+      });
+
+      if (attendeeAlreadyExists) {
+        throw new EventAttendeeAlreadyExistsError(email);
+      }
+
+      if (event.maximumAttendees) {
+        const eventAttendeesCount = await prisma.attendee.count({
+          where: { eventId },
+        });
+        if (eventAttendeesCount >= event.maximumAttendees) {
+          throw new EventSoldOutError(eventId);
+        }
+      }
+
+      const attendee = await prisma.attendee.create({
+        data: {
+          name,
+          email,
+          eventId,
+        },
+      });
+
+      return reply.status(201).send({ attendeeId: attendee.id });
     }
   );
 }

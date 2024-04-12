@@ -41,55 +41,47 @@ export async function fetchEventAttendees(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      try {
-        const { eventId } = request.params;
-        const { page, query } = request.query;
+      const { eventId } = request.params;
+      const { page, query } = request.query;
 
-        const event = await prisma.event.findUnique({ where: { id: eventId } });
-        if (!event) {
-          throw new EventNotFoundError(eventId);
-        }
-
-        const attendees = await prisma.attendee.findMany({
-          where: query
-            ? {
-                eventId,
-                name: {
-                  contains: query,
-                },
-              }
-            : { eventId },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            createdAt: true,
-          },
-          take: 10,
-          skip: (page - 1) * 10,
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-        const eventAttendees = await Promise.all(
-          attendees.map(async (attendee) => {
-            const checkIn = await prisma.checkIn.findUnique({
-              where: { attendeeId: attendee.id },
-            });
-            const checkInAt = checkIn ? checkIn.createdAt : null;
-            return { ...attendee, checkInAt };
-          })
-        );
-
-        return reply.status(200).send({ attendees: eventAttendees });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      const event = await prisma.event.findUnique({ where: { id: eventId } });
+      if (!event) {
+        throw new EventNotFoundError(eventId);
       }
+
+      const attendees = await prisma.attendee.findMany({
+        where: query
+          ? {
+              eventId,
+              name: {
+                contains: query,
+              },
+            }
+          : { eventId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+        },
+        take: 10,
+        skip: (page - 1) * 10,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const eventAttendees = await Promise.all(
+        attendees.map(async (attendee) => {
+          const checkIn = await prisma.checkIn.findUnique({
+            where: { attendeeId: attendee.id },
+          });
+          const checkInAt = checkIn ? checkIn.createdAt : null;
+          return { ...attendee, checkInAt };
+        })
+      );
+
+      return reply.status(200).send({ attendees: eventAttendees });
     }
   );
 }

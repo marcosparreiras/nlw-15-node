@@ -34,45 +34,34 @@ export async function getAttendeeBadge(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      try {
-        const { attendeeId } = request.params;
+      const { attendeeId } = request.params;
 
-        const attendee = await prisma.attendee.findUnique({
-          where: { id: attendeeId },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            event: {
-              select: { title: true },
-            },
+      const attendee = await prisma.attendee.findUnique({
+        where: { id: attendeeId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          event: {
+            select: { title: true },
           },
-        });
+        },
+      });
 
-        if (!attendee) {
-          throw new AttendeeNotFoundError(attendeeId.toString());
-        }
-
-        const baseUrl = `${request.protocol}://${request.hostname}`;
-        const checkInUrl = new URL(
-          `/attendees/${attendee.id}/checkIn`,
-          baseUrl
-        );
-        return reply.status(200).send({
-          badge: {
-            name: attendee.name,
-            email: attendee.email,
-            eventTitle: attendee.event.title,
-            checkInUrl: checkInUrl.toString(),
-          },
-        });
-      } catch (error: unknown) {
-        if (error instanceof DomainError) {
-          return reply.status(400).send({ message: error.message });
-        }
-        console.log(error);
-        return reply.status(500).send({ message: "Internal server error" });
+      if (!attendee) {
+        throw new AttendeeNotFoundError(attendeeId.toString());
       }
+
+      const baseUrl = `${request.protocol}://${request.hostname}`;
+      const checkInUrl = new URL(`/attendees/${attendee.id}/checkIn`, baseUrl);
+      return reply.status(200).send({
+        badge: {
+          name: attendee.name,
+          email: attendee.email,
+          eventTitle: attendee.event.title,
+          checkInUrl: checkInUrl.toString(),
+        },
+      });
     }
   );
 }
