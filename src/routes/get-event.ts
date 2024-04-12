@@ -26,12 +26,6 @@ export async function getEvent(app: FastifyInstance) {
               atteendessAmount: z.number(),
             }),
           }),
-          400: z.object({
-            message: z.string(),
-          }),
-          500: z.object({
-            message: z.string(),
-          }),
         },
       },
     },

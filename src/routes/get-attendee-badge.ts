@@ -24,12 +24,6 @@ export async function getAttendeeBadge(app: FastifyInstance) {
               checkInUrl: z.string().url(),
             }),
           }),
-          400: z.object({
-            message: z.string(),
-          }),
-          500: z.object({
-            message: z.string(),
-          }),
         },
       },
     },

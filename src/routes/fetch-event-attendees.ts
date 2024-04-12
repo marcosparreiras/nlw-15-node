@@ -31,12 +31,6 @@ export async function fetchEventAttendees(app: FastifyInstance) {
               })
             ),
           }),
-          400: z.object({
-            message: z.string(),
-          }),
-          500: z.object({
-            message: z.string(),
-          }),
         },
       },
     },

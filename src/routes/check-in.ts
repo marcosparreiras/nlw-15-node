@@ -20,12 +20,6 @@ export async function checkIn(app: FastifyInstance) {
           201: z.object({
             checkInId: z.number(),
           }),
-          400: z.object({
-            message: z.string(),
-          }),
-          500: z.object({
-            message: z.string(),
-          }),
         },
       },
     },

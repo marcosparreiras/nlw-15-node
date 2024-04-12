@@ -22,12 +22,6 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
           201: z.object({
             eventId: z.string().uuid(),
           }),
-          400: z.object({
-            message: z.string(),
-          }),
-          500: z.object({
-            message: z.string(),
-          }),
         },
       },
     },
