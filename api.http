@@ -25,8 +25,10 @@ GET http://localhost:3000/events/ec71f4c6-b696-4e4f-a467-81663a7ab893
 GET http://localhost:3000/attendees/2/badge
 
 ###
-GET http://localhost:3000/attendees/2/checkIn
+GET http://localhost:3000/attendees/4/checkIn
 
+###
+GET http://localhost:3000/events/ec71f4c6-b696-4e4f-a467-81663a7ab893/attendees
 
 
 

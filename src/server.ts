@@ -9,6 +9,7 @@ import { env } from "./env";
 import { getEvent } from "./routes/get-event";
 import { getAttendeeBadge } from "./routes/get-attendee-badge";
 import { checkIn } from "./routes/check-in";
+import { fetchEventAttendees } from "./routes/fetch-event-attendees";
 
 const app = fastify();
 
@@ -20,6 +21,7 @@ app.register(registerForEvent);
 app.register(getEvent);
 app.register(getAttendeeBadge);
 app.register(checkIn);
+app.register(fetchEventAttendees);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(`HTTP server is running on port ${env.PORT}`);
