@@ -15,10 +15,11 @@ export async function getAttendeeBadge(app: FastifyInstance) {
         }),
         response: {
           200: z.object({
-            attendee: z.object({
+            badge: z.object({
               name: z.string(),
               email: z.string(),
-              event: z.string(),
+              eventTitle: z.string(),
+              checkInUrl: z.string().url(),
             }),
           }),
           400: z.object({
@@ -35,6 +36,7 @@ export async function getAttendeeBadge(app: FastifyInstance) {
         const attendee = await prisma.attendee.findUnique({
           where: { id: attendeeId },
           select: {
+            id: true,
             name: true,
             email: true,
             event: {
@@ -47,11 +49,17 @@ export async function getAttendeeBadge(app: FastifyInstance) {
           throw new AttendeeNotFoundError(attendeeId.toString());
         }
 
+        const baseUrl = `${request.protocol}://${request.hostname}`;
+        const checkInUrl = new URL(
+          `/attendees/${attendee.id}/checkIn`,
+          baseUrl
+        );
         return reply.status(200).send({
-          attendee: {
+          badge: {
             name: attendee.name,
             email: attendee.email,
-            event: attendee.event.title,
+            eventTitle: attendee.event.title,
+            checkInUrl: checkInUrl.toString(),
           },
         });
       } catch (error: unknown) {
