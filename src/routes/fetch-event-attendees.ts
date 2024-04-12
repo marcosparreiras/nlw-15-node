@@ -13,9 +13,12 @@ export async function fetchEventAttendees(app: FastifyInstance) {
         params: z.object({
           eventId: z.string(),
         }),
+        querystring: z.object({
+          query: z.string().nullish(),
+          page: z.coerce.number().int().default(1),
+        }),
         response: {
           200: z.object({
-            total: z.number(),
             attendees: z.array(
               z.object({
                 id: z.number(),
@@ -36,6 +39,7 @@ export async function fetchEventAttendees(app: FastifyInstance) {
     async (request, reply) => {
       try {
         const { eventId } = request.params;
+        const { page, query } = request.query;
 
         const event = await prisma.event.findUnique({ where: { id: eventId } });
         if (!event) {
@@ -43,12 +47,24 @@ export async function fetchEventAttendees(app: FastifyInstance) {
         }
 
         const attendees = await prisma.attendee.findMany({
-          where: { eventId },
+          where: query
+            ? {
+                eventId,
+                name: {
+                  contains: query,
+                },
+              }
+            : { eventId },
           select: {
             id: true,
             name: true,
             email: true,
             createdAt: true,
+          },
+          take: 10,
+          skip: (page - 1) * 10,
+          orderBy: {
+            createdAt: "desc",
           },
         });
 
@@ -62,9 +78,7 @@ export async function fetchEventAttendees(app: FastifyInstance) {
           })
         );
 
-        return reply
-          .status(200)
-          .send({ total: attendees.length, attendees: eventAttendees });
+        return reply.status(200).send({ attendees: eventAttendees });
       } catch (error: unknown) {
         if (error instanceof DomainError) {
           return reply.status(400).send({ message: error.message });
