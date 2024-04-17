@@ -1,9 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
-import { DomainError } from "../errors/domain-error";
-import { prisma } from "../libs/prisma";
-import { EventNotFoundError } from "../errors/event-not-found-error";
+import { prisma } from "../../repositories/prisma";
+import { EventNotFoundError } from "../../domain/erros/event-not-found-error";
 
 export async function getEvent(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(

@@ -1,10 +1,10 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { DomainError } from "../errors/domain-error";
+import { DomainError } from "../../domain/erros/domain-error";
 import { ZodError } from "zod";
 
 export async function errorHandler(
   error: FastifyError,
-  request: FastifyRequest,
+  _request: FastifyRequest,
   reply: FastifyReply
 ) {
   if (error instanceof ZodError) {

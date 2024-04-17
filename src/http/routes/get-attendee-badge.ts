@@ -1,9 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
-import { DomainError } from "../errors/domain-error";
-import { prisma } from "../libs/prisma";
-import { AttendeeNotFoundError } from "../errors/attendee-not-found-error";
+import { prisma } from "../../repositories/prisma";
+import { AttendeeNotFoundError } from "../../domain/erros/attendee-not-found-error";
 
 export async function getAttendeeBadge(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(

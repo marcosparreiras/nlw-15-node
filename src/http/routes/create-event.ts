@@ -1,10 +1,9 @@
+import z from "zod";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { generateSlug } from "../utils/generate-slug";
-import { prisma } from "../libs/prisma";
-import z from "zod";
-import { EventAlreadyExistsError } from "../errors/event-already-exists-error";
-import { DomainError } from "../errors/domain-error";
+import { prisma } from "../../repositories/prisma";
+import { EventAlreadyExistsError } from "../../domain/erros/event-already-exists-error";
 
 export async function createEvent(app: FastifyInstance): Promise<void> {
   app.withTypeProvider<ZodTypeProvider>().post(
