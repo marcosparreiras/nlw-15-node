@@ -2,7 +2,7 @@ import { Entity } from "../utils/entity";
 import { UniqueEntityId } from "../utils/unique-entity-id";
 import { Slug } from "../value-objects/slug";
 
-interface EventEntityProps {
+export interface EventEntityProps {
   title: string;
   details: string;
   slug: Slug;

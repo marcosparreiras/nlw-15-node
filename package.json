@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "O pass.in é uma aplicação de gestão de participantes em eventos presenciais.",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env ./src/http/server.ts",
+    "test": "vitest run",
     "build": "tsup src --format esm",
     "start": "node ./dist/http/server.mjs",
     "db:migrate": "prisma migrate dev",
@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/node": "^20.12.7",
     "prisma": "^5.12.1",
     "tsup": "^8.0.2",
