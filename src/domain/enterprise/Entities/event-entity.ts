@@ -6,7 +6,7 @@ interface EventEntityProps {
   title: string;
   details: string;
   slug: Slug;
-  maximumAttendees: number;
+  maximumAttendees: number | null;
 }
 
 export class EventEntity extends Entity<EventEntityProps> {
@@ -22,7 +22,7 @@ export class EventEntity extends Entity<EventEntityProps> {
     return this.props.slug;
   }
 
-  public get maximumAttendees(): number {
+  public get maximumAttendees(): number | null {
     return this.props.maximumAttendees;
   }
 
