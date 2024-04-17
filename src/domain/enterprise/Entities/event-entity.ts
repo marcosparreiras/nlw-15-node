@@ -1,6 +1,6 @@
-import { Entity } from "./utils/entity";
-import { UniqueEntityId } from "./utils/unique-entity-id";
-import { Slug } from "./value-objects/slug";
+import { Entity } from "../utils/entity";
+import { UniqueEntityId } from "../utils/unique-entity-id";
+import { Slug } from "../value-objects/slug";
 
 interface EventEntityProps {
   title: string;

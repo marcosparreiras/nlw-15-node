@@ -1,6 +1,6 @@
-import { Entity } from "./utils/entity";
-import { Optional } from "./utils/optional";
-import { UniqueEntityId } from "./utils/unique-entity-id";
+import { Entity } from "../utils/entity";
+import { Optional } from "../utils/optional";
+import { UniqueEntityId } from "../utils/unique-entity-id";
 
 interface AttendeeEntityProps {
   name: string;

@@ -1,7 +1,7 @@
 export class Slug {
   private _value: string;
 
-  public get value(): string {
+  public toString(): string {
     return this._value;
   }
 
