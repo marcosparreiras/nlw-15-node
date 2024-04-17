@@ -1,5 +1,5 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { DomainError } from "../../domain/erros/domain-error";
+import { DomainError } from "../../domain/application/erros/domain-error";
 import { ZodError } from "zod";
 
 export async function errorHandler(

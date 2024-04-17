@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
-import { EventNotFoundError } from "../../domain/erros/event-not-found-error";
+import { EventNotFoundError } from "../../domain/application/erros/event-not-found-error";
 import { prisma } from "../../repositories/prisma";
 
 export async function fetchEventAttendees(app: FastifyInstance) {

@@ -2,9 +2,9 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../../repositories/prisma";
-import { EventAttendeeAlreadyExistsError } from "../../domain/erros/event-attendee-already-exists-error";
-import { EventSoldOutError } from "../../domain/erros/event-sold-out-error";
-import { EventNotFoundError } from "../../domain/erros/event-not-found-error";
+import { EventAttendeeAlreadyExistsError } from "../../domain/application/erros/event-attendee-already-exists-error";
+import { EventSoldOutError } from "../../domain/application/erros/event-sold-out-error";
+import { EventNotFoundError } from "../../domain/application/erros/event-not-found-error";
 
 export async function registerForEvent(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(

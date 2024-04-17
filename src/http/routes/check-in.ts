@@ -2,8 +2,8 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../../repositories/prisma";
-import { AttendeeNotFoundError } from "../../domain/erros/attendee-not-found-error";
-import { CheckInAlreadyExistsError } from "../../domain/erros/check-in-already-exists-error";
+import { AttendeeNotFoundError } from "../../domain/application/erros/attendee-not-found-error";
+import { CheckInAlreadyExistsError } from "../../domain/application/erros/check-in-already-exists-error";
 
 export async function checkIn(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
