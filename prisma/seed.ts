@@ -1,4 +1,4 @@
-import { PrismaClient, Event, Attendee, CheckIn } from "@prisma/client";
+import { PrismaClient, Event, Attendee } from "@prisma/client";
 
 const EVENTS: Event[] = [
   {
@@ -17,27 +17,18 @@ const ATTENDEES: Attendee[] = [
     email: "johndoe@example.com",
     eventId: EVENTS[0].id,
     createdAt: new Date(),
-  },
-];
-
-const CHECKINS: CheckIn[] = [
-  {
-    id: 1,
-    createdAt: new Date(),
-    attendeeId: ATTENDEES[0].id,
+    checkInAt: new Date(),
   },
 ];
 
 async function seed() {
   const prisma = new PrismaClient();
 
-  await prisma.checkIn.deleteMany({});
   await prisma.attendee.deleteMany({});
   await prisma.event.deleteMany({});
 
   await prisma.event.createMany({ data: EVENTS });
   await prisma.attendee.createMany({ data: ATTENDEES });
-  await prisma.checkIn.createMany({ data: CHECKINS });
 
   await prisma.$disconnect();
 }
