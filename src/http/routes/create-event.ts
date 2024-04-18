@@ -4,6 +4,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { generateSlug } from "../utils/generate-slug";
 import { prisma } from "../../repositories/prisma";
 import { EventAlreadyExistsError } from "../../domain/application/erros/event-already-exists-error";
+import { UseCaseFacotry } from "../../factories/use-case-factory";
 
 export async function createEvent(app: FastifyInstance): Promise<void> {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -26,22 +27,14 @@ export async function createEvent(app: FastifyInstance): Promise<void> {
     },
     async (request, reply) => {
       const { title, details, maximumAttendees } = request.body;
-      const slug = generateSlug(title);
-      const eventAlreadyExists = await prisma.event.findUnique({
-        where: { slug },
+
+      const createEventUseCase = UseCaseFacotry.makeCreateEventUseCase();
+      const { event } = await createEventUseCase.execute({
+        title,
+        details,
+        maximumAttendees,
       });
-      if (eventAlreadyExists) {
-        throw new EventAlreadyExistsError(title);
-      }
-      const event = await prisma.event.create({
-        data: {
-          title,
-          details,
-          maximumAttendees,
-          slug,
-        },
-      });
-      reply.status(201).send({ eventId: event.id });
+      reply.status(201).send({ eventId: event.id.toString() });
     }
   );
 }

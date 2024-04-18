@@ -5,8 +5,8 @@ import { EventRepository } from "../repositories/event-repository";
 
 interface CreateEventUseCaseRequest {
   title: string;
-  details: string;
-  maximumAttendees: number;
+  details: string | null;
+  maximumAttendees: number | null;
 }
 
 interface CreateEventUseCaseResponse {
