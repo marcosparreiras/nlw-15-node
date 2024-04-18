@@ -4,7 +4,7 @@ import { Slug } from "../value-objects/slug";
 
 export interface EventEntityProps {
   title: string;
-  details: string;
+  details: string | null;
   slug: Slug;
   maximumAttendees: number | null;
 }
@@ -14,7 +14,7 @@ export class EventEntity extends Entity<EventEntityProps> {
     return this.props.title;
   }
 
-  public get details(): string {
+  public get details(): string | null {
     return this.props.details;
   }
 

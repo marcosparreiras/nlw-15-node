@@ -12,7 +12,7 @@ const EVENTS: Event[] = [
 
 const ATTENDEES: Attendee[] = [
   {
-    id: 1,
+    id: "3d57fd67-5e9a-4b24-b7bf-9f3187c488d8",
     name: "john doe",
     email: "johndoe@example.com",
     eventId: EVENTS[0].id,
