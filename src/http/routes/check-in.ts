@@ -1,9 +1,7 @@
+import z from "zod";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import z from "zod";
-import { prisma } from "../../repositories/prisma";
-import { AttendeeNotFoundError } from "../../domain/application/erros/attendee-not-found-error";
-import { CheckInAlreadyExistsError } from "../../domain/application/erros/check-in-already-exists-error";
+import { UseCaseFacotry } from "../../factories/use-case-factory";
 
 export async function checkIn(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
@@ -13,37 +11,20 @@ export async function checkIn(app: FastifyInstance) {
         summary: "Check in an attendee",
         tags: ["check-ins"],
         params: z.object({
-          attendeeId: z.coerce.number(),
+          attendeeId: z.string().uuid(),
         }),
         response: {
-          201: z.object({
-            checkInId: z.number(),
-          }),
+          201: z.object({}),
         },
       },
     },
     async (request, reply) => {
       const { attendeeId } = request.params;
 
-      const checkInAlreadyExists = await prisma.checkIn.findUnique({
-        where: { attendeeId },
-      });
+      const checkInUseCase = UseCaseFacotry.makeCheckInUseCase();
+      await checkInUseCase.execute({ attendeeId });
 
-      if (checkInAlreadyExists) {
-        throw new CheckInAlreadyExistsError(attendeeId.toString());
-      }
-
-      const attendee = await prisma.attendee.findUnique({
-        where: { id: attendeeId },
-      });
-
-      if (!attendee) {
-        throw new AttendeeNotFoundError(attendeeId.toString());
-      }
-
-      const checkIn = await prisma.checkIn.create({ data: { attendeeId } });
-
-      return reply.status(201).send({ checkInId: checkIn.id });
+      return reply.status(201).send({});
     }
   );
 }

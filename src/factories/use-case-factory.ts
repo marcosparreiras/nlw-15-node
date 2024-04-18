@@ -14,7 +14,7 @@ export class UseCaseFacotry {
   private static attendeeRepository: AttendeeRepository =
     new PrismaAttendeeRepository();
 
-  public static makeCheckIn(): CheckInUseCase {
+  public static makeCheckInUseCase(): CheckInUseCase {
     const useCase = new CheckInUseCase(this.attendeeRepository);
     return useCase;
   }
