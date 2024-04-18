@@ -4,7 +4,7 @@ import { AttendeeEntity } from "../domain/enterprise/Entities/attendee-entity";
 import { PrismaAttendeeMapper } from "./mappers/prisma-attendee-mapper";
 import { prisma } from "./prisma";
 
-class PrismaAttendeeRepository implements AttendeeRepository {
+export class PrismaAttendeeRepository implements AttendeeRepository {
   public async countByEventId(eventId: string): Promise<number> {
     const attendeeCount = await prisma.attendee.count({ where: { eventId } });
     return attendeeCount;
@@ -51,5 +51,3 @@ class PrismaAttendeeRepository implements AttendeeRepository {
     return PrismaAttendeeMapper.toDomain(data);
   }
 }
-
-export const prismaAttendeeRepository = new PrismaAttendeeRepository();
