@@ -38,7 +38,7 @@ export class RegisterForEventUseCase {
         eventId
       );
 
-      if (event.maximumAttendees >= eventAttendeeAmount) {
+      if (event.maximumAttendees <= eventAttendeeAmount) {
         throw new EventSoldOutError(event.title);
       }
     }
