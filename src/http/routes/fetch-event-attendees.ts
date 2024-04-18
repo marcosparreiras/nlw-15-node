@@ -3,6 +3,8 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { EventNotFoundError } from "../../domain/application/erros/event-not-found-error";
 import { prisma } from "../../repositories/prisma";
+import { UseCaseFacotry } from "../../factories/use-case-factory";
+import { AttendeePresenter } from "../../presenters/attendee-presenter";
 
 export async function fetchEventAttendees(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
@@ -22,7 +24,7 @@ export async function fetchEventAttendees(app: FastifyInstance) {
           200: z.object({
             attendees: z.array(
               z.object({
-                id: z.number(),
+                id: z.string().uuid(),
                 name: z.string(),
                 email: z.string().email(),
                 createdAt: z.date(),
@@ -37,44 +39,17 @@ export async function fetchEventAttendees(app: FastifyInstance) {
       const { eventId } = request.params;
       const { page, query } = request.query;
 
-      const event = await prisma.event.findUnique({ where: { id: eventId } });
-      if (!event) {
-        throw new EventNotFoundError(eventId);
-      }
-
-      const attendees = await prisma.attendee.findMany({
-        where: query
-          ? {
-              eventId,
-              name: {
-                contains: query,
-              },
-            }
-          : { eventId },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-        },
-        take: 10,
-        skip: (page - 1) * 10,
-        orderBy: {
-          createdAt: "desc",
-        },
+      const fetchEventAttendeesUseCase =
+        UseCaseFacotry.makeFetchEventAttendeesUseCase();
+      const { attendees } = await fetchEventAttendeesUseCase.execute({
+        eventId,
+        page,
+        query,
       });
 
-      const eventAttendees = await Promise.all(
-        attendees.map(async (attendee) => {
-          const checkIn = await prisma.checkIn.findUnique({
-            where: { attendeeId: attendee.id },
-          });
-          const checkInAt = checkIn ? checkIn.createdAt : null;
-          return { ...attendee, checkInAt };
-        })
-      );
-
-      return reply.status(200).send({ attendees: eventAttendees });
+      return reply
+        .status(200)
+        .send({ attendees: attendees.map(AttendeePresenter.toHTTP) });
     }
   );
 }

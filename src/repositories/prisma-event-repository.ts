@@ -25,5 +25,3 @@ export class PrismaEventRepository implements EventRepository {
     await prisma.event.create({ data });
   }
 }
-
-export const prismaEventRepository = new PrismaEventRepository();

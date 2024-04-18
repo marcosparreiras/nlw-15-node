@@ -6,7 +6,7 @@ import { EventRepository } from "../repositories/event-repository";
 interface FetchEventAttendeesUseCaseRequest {
   eventId: string;
   page: number;
-  query?: string;
+  query?: string | null;
 }
 
 interface FetchEventAttendeesUseCaseResponse {

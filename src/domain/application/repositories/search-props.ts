@@ -1,4 +1,4 @@
 export interface SearchProps {
   page: number;
-  query?: string;
+  query?: string | null;
 }
