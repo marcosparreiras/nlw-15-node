@@ -3,6 +3,8 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { prisma } from "../../repositories/prisma";
 import { EventNotFoundError } from "../../domain/application/erros/event-not-found-error";
+import { UseCaseFacotry } from "../../factories/use-case-factory";
+import { EventPresenter } from "../../presenters/event-presenter";
 
 export async function getEvent(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
@@ -31,35 +33,13 @@ export async function getEvent(app: FastifyInstance) {
     async (request, reply) => {
       const { eventId } = request.params;
 
-      const event = await prisma.event.findUnique({
-        where: { id: eventId },
-        select: {
-          id: true,
-          title: true,
-          details: true,
-          slug: true,
-          maximumAttendees: true,
-          _count: {
-            select: {
-              attendees: true,
-            },
-          },
-        },
+      const getEventUseCase = UseCaseFacotry.makeGetEventUseCase();
+      const { event, attendeesAmount } = await getEventUseCase.execute({
+        eventId,
       });
 
-      if (!event) {
-        throw new EventNotFoundError(eventId);
-      }
-
       return reply.status(200).send({
-        event: {
-          id: event.id,
-          title: event.title,
-          details: event.details,
-          slug: event.slug,
-          maximumAttendees: event.maximumAttendees,
-          atteendessAmount: event._count.attendees,
-        },
+        event: EventPresenter.toHTTP(event, attendeesAmount),
       });
     }
   );
