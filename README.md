@@ -57,9 +57,15 @@ Seguindo a documentação você pode usar a api livremente
 http://localhost:3000/docs
 ```
 
-4. Caso queira executar os testes automatizados voce pode executar:
+4. Caso queira executar os testes automatizados você deve executar os camandos abaixo:
 
-Para testes de unidade:
+Para instalar as dependências
+
+```bash
+npm install
+```
+
+Para executar os testes de unidade:
 
 ```bash
 npm run test:unit
@@ -67,7 +73,7 @@ npm run test:unit
 
 ou
 
-Para testes end-to-end: (certifique-se de ter o container do banco de dados em execução)
+Para executar testes end-to-end: (certifique-se de ter o container do banco de dados em execução)
 
 ```bash
 npm run test:unit
