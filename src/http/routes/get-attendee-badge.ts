@@ -1,8 +1,6 @@
 import z from "zod";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { prisma } from "../../repositories/prisma";
-import { AttendeeNotFoundError } from "../../domain/application/erros/attendee-not-found-error";
 import { UseCaseFacotry } from "../../factories/use-case-factory";
 import { AttendeeBadgePresenter } from "../../presenters/attendee-badge-presenter";
 
