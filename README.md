@@ -76,5 +76,5 @@ ou
 Para executar testes end-to-end: (certifique-se de ter o container do banco de dados em execução)
 
 ```bash
-npm run test:unit
+npm run test:e2e
 ```
