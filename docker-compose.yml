@@ -3,7 +3,7 @@ version: "3.7"
 services:
   nlw-db:
     image: postgres
-    container_name: nlw-15-node
+    container_name: nlw-db
     volumes:
       - ./data/pg:/var/lib/postgresql/data
     environment:
@@ -12,3 +12,19 @@ services:
       - POSTGRES_DB=mydb
     ports:
       - 5432:5432
+    networks:
+      - nlw-15-network
+
+  nlw-app:
+    build: .
+    container_name: nlw-app
+    ports:
+      - 3000:3000
+    depends_on:
+      - nlw-db
+    networks:
+      - nlw-15-network
+
+networks:
+  nlw-15-network:
+    driver: bridge
