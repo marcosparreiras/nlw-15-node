@@ -14,7 +14,7 @@ describe("[GET] /events/:eventId/attendees", () => {
     await prismaFakeEntityFactory.disconnect();
   });
 
-  it("Should be able to create an event", async () => {
+  it("Should be able to fetch an event attendees", async () => {
     const events = await Promise.all([
       await prismaFakeEntityFactory.makeEvent(),
       await prismaFakeEntityFactory.makeEvent(),
