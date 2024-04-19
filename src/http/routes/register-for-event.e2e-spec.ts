@@ -2,12 +2,12 @@ import app from "../app";
 import request from "supertest";
 import { PrismaFakeEntityFactory } from "../../../test/factories/prisma/prisma-fake-entity-factory";
 
-describe("[GET] /events/:eventId", () => {
+describe("[POST] /events/:eventId/attendees", () => {
   let prismaFakeEntityFactory: PrismaFakeEntityFactory;
 
   beforeAll(async () => {
-    await app.ready();
     prismaFakeEntityFactory = new PrismaFakeEntityFactory();
+    await app.ready();
   });
 
   afterAll(async () => {
@@ -15,17 +15,27 @@ describe("[GET] /events/:eventId", () => {
     await prismaFakeEntityFactory.disconnect();
   });
 
-  it("Should be able to get an event by id", async () => {
+  it("Should be able to register a new event attendee", async () => {
     const event = await prismaFakeEntityFactory.makeEvent();
-    const response = await request(app.server)
-      .get(`/events/${event.id.toString()}`)
-      .send();
 
-    expect(response.status).toEqual(200);
+    const response = await request(app.server)
+      .post(`/events/${event.id.toString()}/attendees`)
+      .send({
+        name: "John Doe",
+        email: "johndoe@example.com",
+      });
+
+    expect(response.status).toEqual(201);
     expect(response.body).toEqual(
       expect.objectContaining({
-        event: expect.any(Object),
+        attendeeId: expect.any(String),
       })
     );
+
+    const attendeeOnRepository =
+      await prismaFakeEntityFactory.prisma.attendee.findUnique({
+        where: { id: response.body.attendeeId },
+      });
+    expect(attendeeOnRepository).toBeTruthy();
   });
 });
