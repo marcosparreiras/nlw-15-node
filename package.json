@@ -20,7 +20,9 @@
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@types/node": "^20.12.7",
+    "@types/supertest": "^6.0.2",
     "prisma": "^5.12.1",
+    "supertest": "^6.3.4",
     "tsup": "^8.0.2",
     "tsx": "^4.7.2",
     "typescript": "^5.4.4",
