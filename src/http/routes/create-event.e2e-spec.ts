@@ -1,18 +1,17 @@
 import app from "../app";
 import request from "supertest";
-import { PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { PrismaFakeEntityFactory } from "../../../test/factories/prisma/prisma-fake-entity-factory";
 
 describe("[POST] /events", () => {
-  let prisma: PrismaClient<never, DefaultArgs>;
+  let prismaFakeEntityFactory: PrismaFakeEntityFactory;
   beforeAll(async () => {
     await app.ready();
-    prisma = new PrismaClient();
+    prismaFakeEntityFactory = new PrismaFakeEntityFactory();
   });
 
   afterAll(async () => {
     await app.close();
-    await prisma.$disconnect();
+    await prismaFakeEntityFactory.disconnect();
   });
 
   it("Should be able to create an event", async () => {
@@ -23,9 +22,10 @@ describe("[POST] /events", () => {
     });
 
     expect(response.status).toEqual(201);
-    const eventOnRepository = await prisma.event.findUnique({
-      where: { slug: "my-event" },
-    });
+    const eventOnRepository =
+      await prismaFakeEntityFactory.prisma.event.findUnique({
+        where: { slug: "my-event" },
+      });
 
     expect(eventOnRepository).toEqual(
       expect.objectContaining({

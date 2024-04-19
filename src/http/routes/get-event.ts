@@ -1,8 +1,6 @@
 import z from "zod";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { prisma } from "../../repositories/prisma";
-import { EventNotFoundError } from "../../domain/application/erros/event-not-found-error";
 import { UseCaseFacotry } from "../../factories/use-case-factory";
 import { EventPresenter } from "../../presenters/event-presenter";
 
